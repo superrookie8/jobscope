@@ -39,6 +39,14 @@ db.exec(`DROP TABLE IF EXISTS skill_alias;
 const ins = db.prepare("INSERT INTO skill_alias(raw, canonical) VALUES(?, ?)");
 const raws = db.prepare("SELECT DISTINCT skill FROM job_skill").all().map((r) => r.skill);
 db.transaction(() => raws.forEach((r) => canon(r).forEach((c) => ins.run(r, c))))();
+// 인덱스: 검색·조인에 쓰이는 컬럼. 없으면 job_skill(8,285행)을 매 검색마다 전체 탐색한다.
+db.exec(`CREATE INDEX IF NOT EXISTS idx_job_skill_job ON job_skill(job_id);
+  CREATE INDEX IF NOT EXISTS idx_job_skill_skill ON job_skill(skill);
+  CREATE INDEX IF NOT EXISTS idx_skill_alias_canonical ON skill_alias(canonical);
+  CREATE INDEX IF NOT EXISTS idx_job_analysis_role ON job_analysis(role);
+  CREATE INDEX IF NOT EXISTS idx_job_category_job ON job_category(job_id);
+  CREATE INDEX IF NOT EXISTS idx_job_company ON job(company_id);
+  ANALYZE;`);
 const n = db.prepare("SELECT COUNT(DISTINCT canonical) AS n FROM skill_alias").get().n;
 console.log(`skill_alias: ${raws.length} raw → ${n} canonical`);
 db.close();
