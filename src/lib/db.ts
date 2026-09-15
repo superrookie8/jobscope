@@ -106,15 +106,27 @@ export function getRoles() {
     .all() as { role: string; n: number }[];
 }
 
-// 직무별 필수/우대 역량 상위 N개 (통계 페이지용)
-export function getRoleSkills(role: string, kind: "required" | "preferred", limit = 12) {
-  return db
-    .prepare(`SELECT s.skill, COUNT(DISTINCT s.job_id) AS n,
-                     ROUND(100.0 * COUNT(DISTINCT s.job_id) / (SELECT COUNT(*) FROM job_analysis WHERE role = ?), 0) AS pct
-              FROM job_skill s JOIN job_analysis a ON a.job_id = s.job_id
-              WHERE a.role = ? AND s.kind = ?
-              GROUP BY s.skill ORDER BY n DESC LIMIT ?`)
-    .all(role, role, kind, limit) as { skill: string; n: number; pct: number }[];
+// 직무별 필수/우대 역량 상위 N개를 쿼리 한 번으로.
+// 이전: 직무마다 필수·우대 2번씩 호출 (직무 14개 → 28회). 지금: 윈도우 함수로 직무·종류별 순위를 매겨 한 번에.
+export function getAllRoleSkills(limit = 12) {
+  const rows = db
+    .prepare(`SELECT role, kind, skill, n, ROUND(100.0 * n / total, 0) AS pct FROM (
+                SELECT a.role, s.kind, al.canonical AS skill, COUNT(DISTINCT s.job_id) AS n,
+                       (SELECT COUNT(*) FROM job_analysis WHERE role = a.role) AS total,
+                       ROW_NUMBER() OVER (PARTITION BY a.role, s.kind ORDER BY COUNT(DISTINCT s.job_id) DESC, al.canonical) AS rn
+                FROM job_skill s
+                JOIN job_analysis a ON a.job_id = s.job_id
+                JOIN skill_alias al ON al.raw = s.skill
+                WHERE a.role IS NOT NULL AND a.role != ''
+                GROUP BY a.role, s.kind, al.canonical)
+              WHERE rn <= ? ORDER BY role, kind, rn`)
+    .all(limit) as { role: string; kind: "required" | "preferred"; skill: string; n: number; pct: number }[];
+  // role → kind → 목록 형태로 묶어서 반환
+  const out: Record<string, { required: typeof rows; preferred: typeof rows }> = {};
+  for (const r of rows) {
+    (out[r.role] ??= { required: [], preferred: [] })[r.kind].push(r);
+  }
+  return out;
 }
 
 export function getRoleStats() {

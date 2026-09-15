@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getRoleStats, getRoleSkills } from "@/lib/db";
+import { getRoleStats, getAllRoleSkills } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "직무별 요구 역량 통계",
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 
 export default function StatsPage() {
   const stats = getRoleStats();
+  const skillsByRole = getAllRoleSkills(); // 쿼리 1회
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold">직무별 요구 역량</h1>
@@ -36,8 +37,8 @@ export default function StatsPage() {
         <section key={s.role} className="rounded-lg border bg-white p-4">
           <h2 className="mb-3 text-lg font-semibold">{s.role} <span className="text-sm font-normal text-zinc-500">({s.n}건)</span></h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Bars title="필수" items={getRoleSkills(s.role, "required")} />
-            <Bars title="우대" items={getRoleSkills(s.role, "preferred")} />
+            <Bars title="필수" items={skillsByRole[s.role]?.required ?? []} />
+            <Bars title="우대" items={skillsByRole[s.role]?.preferred ?? []} />
           </div>
         </section>
       ))}
