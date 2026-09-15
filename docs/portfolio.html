@@ -1,0 +1,258 @@
+<title>JobScope 케이스 스터디</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f7f8fa; --paper:#ffffff; --ink:#15202b; --ink-2:#4a5566; --ink-3:#7b8494;
+  --line:#dde2e9; --accent:#1f5fbf; --accent-soft:#e6eefb; --ok:#1c7c4d; --ok-soft:#e3f3ea;
+  --warn:#a35c00; --warn-soft:#fbefd9; --code-bg:#f1f3f7; --before:#b3342e; --before-soft:#fbe9e7;
+  --sans:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --paper:#161d26; --ink:#e7ebf0; --ink-2:#b4bcc8; --ink-3:#7f8896; --line:#2a3340;
+  --accent:#6ea3f0; --accent-soft:#1a2a44; --ok:#5fc48c; --ok-soft:#173225; --warn:#e0a24a; --warn-soft:#3a2a10;
+  --code-bg:#0f151c; --before:#ee7b74; --before-soft:#3a1c1a;}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --paper:#161d26; --ink:#e7ebf0; --ink-2:#b4bcc8; --ink-3:#7f8896; --line:#2a3340;
+  --accent:#6ea3f0; --accent-soft:#1a2a44; --ok:#5fc48c; --ok-soft:#173225; --warn:#e0a24a; --warn-soft:#3a2a10;
+  --code-bg:#0f151c; --before:#ee7b74; --before-soft:#3a1c1a;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;padding-inline:20px;padding-block:0 80px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.35rem;font-weight:600;margin-top:64px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:1.05rem;font-weight:600;margin-top:28px}
+p{margin:12px 0;max-width:68ch}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+header{padding-block:56px 8px}
+header .lead{font-size:1.1rem;color:var(--ink-2);max-width:60ch}
+.links{display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--mono);font-size:.85rem;margin-top:14px}
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+.score{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.score b{display:block;font-family:var(--mono);font-size:1.6rem;color:var(--ok);line-height:1.1}
+.score span{font-size:.8rem;color:var(--ink-2)}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.fact{border-left:2px solid var(--accent);padding:2px 0 2px 14px}
+.fact b{display:block;font-family:var(--mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.fact span{font-size:.85rem;color:var(--ink-2)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:18px 0}
+.flow .step{flex:1 1 150px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.flow .step .t{font-weight:600;font-size:.95rem}
+.flow .step .d{font-size:.82rem;color:var(--ink-2);margin-top:4px;line-height:1.5}
+.flow .step .f{font-family:var(--mono);font-size:.74rem;color:var(--ink-3);margin-top:8px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.6;margin:14px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre code{background:none;padding:0;font-size:inherit}
+.cmt{color:var(--ink-3)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:14px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;font-size:.82rem;color:var(--ink-2);letter-spacing:.02em}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.ba>div{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px 14px;min-width:0}
+.ba .lab{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.ba .before .lab{color:var(--before)} .ba .after .lab{color:var(--ok)}
+.ba pre{margin:8px 0 0;border:0;padding:10px 12px}
+.pill{display:inline-block;font-family:var(--mono);font-size:.74rem;padding:2px 8px;border-radius:999px;margin-right:6px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--before-soft);color:var(--before)} .pill.acc{background:var(--accent-soft);color:var(--accent)}
+.note{background:var(--accent-soft);border-radius:6px;padding:12px 16px;margin:16px 0}
+.note.warn{background:var(--warn-soft)}
+.issue{margin-top:34px;padding-top:6px}
+.issue .eyebrow{margin-bottom:4px}
+dl{display:grid;grid-template-columns:110px 1fr;gap:6px 14px;margin:12px 0;font-size:.95rem}
+dt{color:var(--ink-3);font-size:.85rem;padding-top:3px}
+dd{margin:0}
+ul{padding-left:20px;margin:10px 0} li{margin:4px 0}
+.files{font-family:var(--mono);font-size:.82rem}
+.files td:first-child{white-space:nowrap;color:var(--accent)}
+@media (max-width:640px){.scores,.facts{grid-template-columns:repeat(2,1fr)}.ba{grid-template-columns:1fr}dl{grid-template-columns:1fr}h1{font-size:1.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Case study · 2026-09</div>
+  <h1 style="margin-top:8px">JobScope</h1>
+  <p class="lead">채용 플랫폼이 직무명 키워드로만 추천하는 문제를, 공고 본문을 읽어 실제 업무 기준으로 재분류하고 요구 역량을 집계해서 풀어본 프로젝트. 수집 파이프라인부터 검색 사이트까지, 그리고 만든 뒤 찾아낸 문제 세 가지를 측정과 함께 고친 기록.</p>
+  <div class="links">
+    <a href="https://jobscope-mu.vercel.app">jobscope-mu.vercel.app</a>
+    <a href="https://github.com/superrookie8/jobscope">github.com/superrookie8/jobscope</a>
+  </div>
+  <div class="scores">
+    <div class="score"><b>100</b><span>Performance</span></div>
+    <div class="score"><b>100</b><span>Accessibility</span></div>
+    <div class="score"><b>100</b><span>Best Practices</span></div>
+    <div class="score"><b>100</b><span>SEO</span></div>
+  </div>
+  <p style="font-size:.8rem;color:var(--ink-3);margin-top:6px">Lighthouse, 배포 사이트 목록 페이지, 2026-09-16</p>
+</header>
+
+<h2>1. 문제</h2>
+<p>사람인·잡코리아의 AI 추천은 이력서의 직무명과 공고의 직무명을 맞춘다. 광고 3년 뒤 프론트엔드로 옮긴 지원자에게는 프론트엔드 공고만 나온다. 그런데 "AI 자동화 빌더"처럼 이름이 아직 정착되지 않은 직무는 공고 제목에 그 이름이 없다. 본문을 읽어야 보인다.</p>
+<p>그래서 AI 관련 키워드 12개로 공고를 모으고, 본문을 LLM으로 읽혀 <em>실제 수행 업무</em> 기준 17개 직무로 다시 분류했다.</p>
+<div class="facts">
+  <div class="fact"><b>1,323</b><span>수집한 공고 (사람인 + 잡코리아)</span></div>
+  <div class="fact"><b>44%</b><span>"AI" 키워드로 잡혔지만 실제로는 일반 사무·마케팅·디자인</span></div>
+  <div class="fact"><b>82</b><span>재분류 후 지원자 프로필에 "적합"으로 판정된 공고</span></div>
+</div>
+
+<h2>2. 구조</h2>
+<div class="flow">
+  <div class="step"><div class="t">수집</div><div class="d">키워드별 목록 → 상세 본문. 이미지 공고는 요약 패널로 보완</div><div class="f">crawl.py</div></div>
+  <div class="step"><div class="t">분류</div><div class="d">본문 → 직무·필수/우대 역량·AI 관여도·실채용 여부 (LLM, 12건씩 배치)</div><div class="f">classify.py</div></div>
+  <div class="step"><div class="t">적재</div><div class="d">정규화된 5개 테이블 + 표기 정규화 테이블 + 인덱스</div><div class="f">SQLite · prepare-db.mjs</div></div>
+  <div class="step"><div class="t">서비스</div><div class="d">서버 컴포넌트에서 직접 SQL. 상세 1,323쪽 정적 생성</div><div class="f">Next.js 16 · db.ts</div></div>
+</div>
+
+<h3>데이터 모델</h3>
+<pre><code>company      (id, name)
+job          (id, site, company_id → company, title, url, location, exp_text, deadline, …)
+job_category (job_id → job, category)                 <span class="cmt">-- 1 : N</span>
+job_analysis (job_id → job, role, role_note, ai_level, exp_min, is_real_hiring, fit, …)   <span class="cmt">-- 1 : 1</span>
+job_skill    (job_id → job, skill, kind)              <span class="cmt">-- 1 : N, kind = required | preferred</span>
+skill_alias  (raw, canonical)                         <span class="cmt">-- 원문 표기 → 표준명, N : M</span></code></pre>
+
+<h3>파일별 역할</h3>
+<div class="tw"><table class="files">
+<tr><td>src/lib/db.ts</td><td>SQL 전부. 연결, 목록 검색(WHERE 조립), 상세, 통계 집계</td></tr>
+<tr><td>src/app/page.tsx</td><td>검색 폼 + 목록. URL 파라미터 → 필터 객체 → searchJobs()</td></tr>
+<tr><td>src/app/jobs/[id]/page.tsx</td><td>상세. generateStaticParams로 빌드 시 정적 생성, generateMetadata로 페이지별 SEO 태그, JSON-LD</td></tr>
+<tr><td>src/app/stats/page.tsx</td><td>직무별 공고 수·신입 비율·역량 언급 비율</td></tr>
+<tr><td>src/app/sitemap.ts, robots.ts</td><td>sitemap.xml, robots.txt 자동 생성</td></tr>
+<tr><td>scripts/prepare-db.mjs</td><td>skill_alias 생성, 인덱스 생성</td></tr>
+<tr><td>scripts/bench.mjs</td><td>개선 전/후 측정 → docs/bench-*.json</td></tr>
+</table></div>
+
+<h3>핵심 코드 두 곳</h3>
+<p>목록 검색. 조건이 있을 때만 WHERE 절에 붙이고, 값은 전부 <code>?</code> 바인딩으로 넘긴다. 문자열을 이어 붙이지 않으므로 SQL 인젝션이 생기지 않는다.</p>
+<pre><code>const where: string[] = [];  const params: (string | number)[] = [];
+if (f.role) { where.push("a.role = ?");       params.push(f.role); }
+if (f.exp === "entry") where.push("a.exp_min = 0");
+if (f.skill) {
+  where.push("j.id IN (SELECT s.job_id FROM job_skill s JOIN skill_alias al ON al.raw = s.skill WHERE al.canonical = ?)");
+  params.push(f.skill);
+}
+const sql = `SELECT … FROM job j JOIN company c ON c.id = j.company_id
+             LEFT JOIN job_analysis a ON a.job_id = j.id
+             ${where.length ? "WHERE " + where.join(" AND ") : ""}
+             ORDER BY a.is_real_hiring DESC, j.crawled_at DESC LIMIT ? OFFSET ?`;</code></pre>
+<p>상세 페이지 SEO. 공고마다 다른 title·description·canonical을 만든다. 1,323쪽이 빌드 시 HTML로 나오므로 검색엔진이 JS 실행 없이 읽는다.</p>
+<pre><code>export function generateStaticParams() { return getAllJobIds().map((id) => ({ id })); }
+
+export async function generateMetadata({ params }) {
+  const job = getJob(decodeURIComponent((await params).id));
+  return { title: `${job.title} – ${job.company}`,
+           description: [job.role, job.role_note, …].filter(Boolean).join(" · ").slice(0, 155),
+           alternates: { canonical: `/jobs/${encodeURIComponent(job.id)}` } };
+}</code></pre>
+
+<h2>3. 만든 뒤 찾은 문제와 개선</h2>
+<p>동작하는 사이트를 만든 다음, 코드를 다시 읽고 DB에 직접 물어봐서 문제 세 가지를 찾았다. 각각 별도 커밋으로 고치고, 같은 스크립트로 전/후를 쟀다. 측정은 각 쿼리 200회 반복 평균, 로컬.</p>
+
+<div class="issue">
+<div class="eyebrow">Issue 1 · 정확도</div>
+<h3>"React"를 검색하면 React Native, React Query가 섞여 나온다</h3>
+<dl>
+  <dt>발견</dt><dd>DBeaver에서 역량 표기를 묶어 세어봤다. <code>SELECT skill, COUNT(*) FROM job_skill WHERE skill LIKE '%React%' GROUP BY skill</code> → 46가지 표기.</dd>
+  <dt>원인</dt><dd>LLM이 추출한 문자열("React/Next.js/TypeScript", "React 또는 Vue")을 그대로 저장하고 <code>LIKE '%검색어%'</code>로 비교했다.</dd>
+  <dt>수정</dt><dd>원문 표기 → 표준명 매핑 테이블 <code>skill_alias</code>를 규칙으로 생성. 복합 표기는 구분자로 나눠 여러 표준명에 대응. 검색은 표준명 정확 일치.</dd>
+</dl>
+<div class="ba">
+  <div class="before"><div class="lab">Before</div><pre><code>WHERE skill LIKE '%React%'</code></pre></div>
+  <div class="after"><div class="lab">After</div><pre><code>JOIN skill_alias al ON al.raw = s.skill
+WHERE al.canonical = 'React'</code></pre></div>
+</div>
+<div class="tw"><table>
+<tr><th></th><th class="num">Before</th><th class="num">After</th></tr>
+<tr><td>'React' 검색 결과</td><td class="num">92건</td><td class="num">87건 <span class="pill ok">오탐 5건 제거</span></td></tr>
+<tr><td>매칭되는 표기 종류</td><td class="num">46종</td><td class="num">1종</td></tr>
+<tr><td>쿼리 시간</td><td class="num">1.56 ms</td><td class="num">0.20 ms</td></tr>
+<tr><td>쿼리 플랜</td><td class="num"><span class="pill bad">SCAN job_skill</span></td><td class="num"><span class="pill ok">SEARCH USING INDEX</span></td></tr>
+</table></div>
+<p style="font-size:.9rem;color:var(--ink-2)">남은 한계: 규칙 매핑이라 새 표기가 들어오면 규칙을 추가해야 한다. 6,203종 중 규칙에 안 걸린 표기는 원문이 그대로 표준명이 된다.</p>
+</div>
+
+<div class="issue">
+<div class="eyebrow">Issue 2 · 인덱스</div>
+<h3>검색할 때마다 job_skill 8,285행을 전부 훑는다</h3>
+<dl>
+  <dt>발견</dt><dd>쿼리 앞에 <code>EXPLAIN QUERY PLAN</code>을 붙여 실행. <code>SCAN job_skill</code>이 찍혔다. SEARCH면 인덱스를 타는 것이고 SCAN이면 전체 탐색이다.</dd>
+  <dt>원인</dt><dd>기본키 외에 인덱스를 하나도 만들지 않았다. 1,323건이라 체감이 없었을 뿐이다.</dd>
+  <dt>수정</dt><dd>검색·조인에 쓰이는 컬럼 6개에 인덱스. <code>job_skill(skill)</code>, <code>job_skill(job_id)</code>, <code>skill_alias(canonical)</code>, <code>job_analysis(role)</code>, <code>job_category(job_id)</code>, <code>job(company_id)</code>.</dd>
+</dl>
+<div class="ba">
+  <div class="before"><div class="lab">Before</div><pre><code>QUERY PLAN
+|--LIST SUBQUERY 1
+|  `--SCAN job_skill
+`--SEARCH j USING INDEX (id=?)</code></pre></div>
+  <div class="after"><div class="lab">After</div><pre><code>QUERY PLAN
+|--LIST SUBQUERY 1
+|  |--SEARCH al USING INDEX idx_skill_alias_canonical
+|  `--SEARCH s USING INDEX idx_job_skill_skill
+`--SEARCH j USING INDEX (id=?)</code></pre></div>
+</div>
+<div class="tw"><table>
+<tr><th></th><th class="num">Before</th><th class="num">After</th></tr>
+<tr><td>인덱스 수 (PK 제외)</td><td class="num">0</td><td class="num">6</td></tr>
+<tr><td>통계용 직무별 쿼리 28회 합계</td><td class="num">63 ms</td><td class="num">13 ms</td></tr>
+</table></div>
+</div>
+
+<div class="issue">
+<div class="eyebrow">Issue 3 · N+1</div>
+<h3>통계 페이지가 쿼리를 28번 날린다</h3>
+<dl>
+  <dt>발견</dt><dd><code>stats/page.tsx</code>에서 직무 14개를 <code>map</code>으로 돌며 필수·우대 각각 <code>getRoleSkills()</code> 호출. 반복문 안의 쿼리, 전형적인 N+1.</dd>
+  <dt>수정</dt><dd>윈도우 함수 <code>ROW_NUMBER() OVER (PARTITION BY role, kind)</code>로 직무·종류별 상위 12개를 쿼리 한 번에. 직무별 총계는 CTE로 미리 구해 조인.</dd>
+</dl>
+<div class="ba">
+  <div class="before"><div class="lab">Before · 28 queries</div><pre><code>stats.map(s => (
+  &lt;Bars items={getRoleSkills(s.role, "required")} /&gt;
+  &lt;Bars items={getRoleSkills(s.role, "preferred")} /&gt;
+))</code></pre></div>
+  <div class="after"><div class="lab">After · 1 query</div><pre><code>WITH totals AS (SELECT role, COUNT(*) total FROM job_analysis GROUP BY role)
+SELECT … FROM (
+  SELECT a.role, s.kind, al.canonical, COUNT(DISTINCT s.job_id) n,
+         ROW_NUMBER() OVER (PARTITION BY a.role, s.kind
+                            ORDER BY COUNT(DISTINCT s.job_id) DESC) rn
+  FROM job_skill s JOIN job_analysis a … JOIN skill_alias al … JOIN totals t …
+  GROUP BY a.role, s.kind, al.canonical)
+WHERE rn &lt;= 12</code></pre></div>
+</div>
+<div class="tw"><table>
+<tr><th></th><th class="num">28회 (N+1)</th><th class="num">1회 (윈도우)</th></tr>
+<tr><td>인덱스 없을 때</td><td class="num">63 ms</td><td class="num">28 ms</td></tr>
+<tr><td>인덱스 있을 때</td><td class="num">13 ms</td><td class="num">28 ms</td></tr>
+</table></div>
+<div class="note warn">
+<b>측정이 예상과 달랐다.</b> 인덱스를 넣고 나니 이 규모(8천 행)에서는 28회 인덱스 조회가 윈도우 집계 1회보다 빠르다. 윈도우 쿼리는 호출마다 전체 행을 집계하기 때문이다.
+그래도 1회 쿼리를 유지했다. 이 페이지는 빌드 시 한 번만 실행되는 정적 페이지라 15ms 차이가 의미 없고, 직무가 100개로 늘면 N+1은 200회가 되지만 윈도우 쿼리는 그대로 1회이며, 외부 DB로 옮기면 네트워크 왕복 횟수가 시간을 지배한다.
+배운 것은 "N+1은 항상 느리다"가 아니라 "측정해서 결정한다"였다.
+</div>
+</div>
+
+<h2>4. 개선 커밋</h2>
+<div class="tw"><table class="files">
+<tr><td>68487db</td><td>측정 스크립트 추가, 수정 전 기준값 기록</td></tr>
+<tr><td>9c8d9f5</td><td>역량 검색 정확도: LIKE 부분일치 → skill_alias 표준명 정확일치</td></tr>
+<tr><td>4a61138</td><td>인덱스 추가: job_skill, skill_alias, job_analysis.role 등 6개</td></tr>
+<tr><td>5d43c16</td><td>통계 페이지 N+1 제거: 직무별 역량 쿼리 28회 → 윈도우 함수 1회</td></tr>
+<tr><td>c018dec</td><td>접근성: 검색 폼 label 추가, 보조 텍스트 대비 상향 (Accessibility 94 → 100)</td></tr>
+</table></div>
+<p style="font-size:.9rem;color:var(--ink-2)">각 커밋의 diff는 <code>git show &lt;해시&gt;</code>. 측정 원본은 <code>docs/bench-before.json</code>, <code>docs/bench-after.json</code>.</p>
+
+<h2>5. 아직 남은 것</h2>
+<ul>
+  <li><b>데이터가 배포에 박혀 있다.</b> 읽기 전용 SQLite를 번들에 포함하므로 새 공고를 반영하려면 재배포해야 한다. 외부 DB(PostgreSQL)로 옮기면 <code>db.ts</code>의 연결 부분만 바뀌고 SQL은 거의 그대로다.</li>
+  <li><b>마감 지난 공고가 노출된다.</b> 마감일이 "~ 09/30(수)" 같은 문자열이라 비교가 안 된다. 날짜로 파싱해서 저장하고 기본 제외해야 한다.</li>
+  <li><b>OFFSET 페이지네이션.</b> 45페이지라 지금은 무관하지만, 규모가 커지면 커서 방식으로.</li>
+  <li><b>분류는 LLM 추정치.</b> 직무·역량 오분류가 있다. 사람인 이미지 공고 137건은 본문 없이 제목·카테고리로만 분류됐다.</li>
+</ul>
+
+<h2>6. 기술</h2>
+<p>Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, SQLite + better-sqlite3, Vercel. 데이터 파이프라인은 Python과 Claude CLI.</p>
+</div>
