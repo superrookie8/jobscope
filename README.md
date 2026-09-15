@@ -1,6 +1,7 @@
 # JobScope
 
-배포: https://jobscope-mu.vercel.app
+배포: https://jobscope-mu.vercel.app  
+Lighthouse (2026-09-16, 목록 페이지): Performance 100 · Accessibility 100 · Best Practices 100 · SEO 100
 
 사람인·잡코리아의 AI 관련 채용공고 1,323건을 수집해, 공고 제목이 아니라 **실제 수행 업무 기준**으로 직무를 재분류하고 요구 역량을 집계한 탐색 사이트입니다.
 
