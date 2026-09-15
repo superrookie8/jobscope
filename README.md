@@ -1,5 +1,7 @@
 # JobScope
 
+배포: https://jobscope-mu.vercel.app
+
 사람인·잡코리아의 AI 관련 채용공고 1,323건을 수집해, 공고 제목이 아니라 **실제 수행 업무 기준**으로 직무를 재분류하고 요구 역량을 집계한 탐색 사이트입니다.
 
 플랫폼 추천은 직무명 키워드로만 매칭해서 "프론트엔드 경력 → 프론트엔드 공고만" 같은 편중이 생깁니다. 본문을 읽어 재분류하면 "AI 자동화 빌더"처럼 아직 이름이 정착되지 않은 직무도 잡을 수 있습니다.
@@ -30,7 +32,7 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build && npm start
 ```
-배포 시 `NEXT_PUBLIC_SITE_URL`에 실제 주소를 넣어야 sitemap·canonical이 올바른 도메인으로 생성됩니다.
+배포 시 `SITE_URL`에 실제 주소를 넣어야 sitemap·canonical이 올바른 도메인으로 생성됩니다.
 
 ## 코드 개선 기록
 [docs/before-after.md](docs/before-after.md): 역량 검색 정확도, 인덱스, 통계 N+1 — 측정값과 함께 전/후 비교.

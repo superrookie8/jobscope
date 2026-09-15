@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const SITE = process.env.SITE_URL ?? "http://localhost:3000";
 
 // 사이트 공통 메타데이터. 각 페이지는 title만 덮어쓴다 (template의 %s 자리).
 export const metadata: Metadata = {
