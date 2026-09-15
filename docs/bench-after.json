@@ -1,0 +1,45 @@
+{
+  "label": "after",
+  "at": "2026-09-15T23:00:43.695Z",
+  "indexes": [
+    "idx_job_skill_job",
+    "idx_job_skill_skill",
+    "idx_skill_alias_canonical",
+    "idx_job_analysis_role",
+    "idx_job_category_job",
+    "idx_job_company"
+  ],
+  "skillSearch": {
+    "like": {
+      "jobs": 92,
+      "distinctSpellings": 46,
+      "ms": 1.481,
+      "plan": [
+        "SEARCH j USING COVERING INDEX sqlite_autoindex_job_1 (id=?)",
+        "LIST SUBQUERY 1",
+        "SCAN job_skill"
+      ]
+    },
+    "alias": {
+      "jobs": 87,
+      "falsePositivesRemoved": 5,
+      "ms": 0.2,
+      "plan": [
+        "SEARCH j USING COVERING INDEX sqlite_autoindex_job_1 (id=?)",
+        "LIST SUBQUERY 1",
+        "SEARCH al USING INDEX idx_skill_alias_canonical (canonical=?)",
+        "SEARCH s USING INDEX idx_job_skill_skill (skill=?)"
+      ]
+    }
+  },
+  "statsPage": {
+    "nPlus1": {
+      "queries": 28,
+      "ms": 13.41
+    },
+    "oneShot": {
+      "queries": 1,
+      "ms": 28.33
+    }
+  }
+}

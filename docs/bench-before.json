@@ -1,27 +1,28 @@
 {
   "label": "before",
-  "at": "2026-09-15T22:57:37.717Z",
+  "at": "2026-09-15T23:01:02.668Z",
   "indexes": [],
   "skillSearch": {
-    "distinctSpellingsForReact": 46,
-    "canonicalSpellingsForReact": null,
-    "queryMs": 1.557,
-    "plan": [
-      "SEARCH a USING COVERING INDEX sqlite_autoindex_job_analysis_1 (job_id=?)",
-      "LIST SUBQUERY 1",
-      "SCAN job_skill",
-      "REUSE LIST SUBQUERY 1",
-      "SEARCH j USING COVERING INDEX sqlite_autoindex_job_1 (id=?)"
-    ]
+    "like": {
+      "jobs": 92,
+      "distinctSpellings": 46,
+      "ms": 1.562,
+      "plan": [
+        "SEARCH j USING COVERING INDEX sqlite_autoindex_job_1 (id=?)",
+        "LIST SUBQUERY 1",
+        "SCAN job_skill"
+      ]
+    },
+    "alias": null
   },
   "statsPage": {
     "nPlus1": {
       "queries": 28,
-      "ms": 85.78
+      "ms": 63.18
     },
     "oneShot": {
       "queries": 1,
-      "ms": 29
+      "ms": 27.78
     }
   }
 }

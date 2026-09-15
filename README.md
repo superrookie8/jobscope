@@ -32,6 +32,9 @@ npm run build && npm start
 ```
 배포 시 `NEXT_PUBLIC_SITE_URL`에 실제 주소를 넣어야 sitemap·canonical이 올바른 도메인으로 생성됩니다.
 
+## 코드 개선 기록
+[docs/before-after.md](docs/before-after.md): 역량 검색 정확도, 인덱스, 통계 N+1 — 측정값과 함께 전/후 비교.
+
 ## 한계
 - 직무 분류와 역량 추출은 LLM 추정치라 오분류가 있을 수 있습니다.
 - 사람인 이미지 공고 일부는 본문 없이 제목·카테고리만으로 분류됐습니다.
