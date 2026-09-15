@@ -1,69 +1,77 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { searchJobs, getRoles, type Filters } from "@/lib/db";
+import { JobCard } from "@/components/JobCard";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "AI 직무 채용공고 검색",
+  description: "직무·경력·요구 역량으로 사람인·잡코리아 AI 관련 공고를 검색합니다.",
+  alternates: { canonical: "/" },
+};
+
+// Next.js 15+에서 searchParams는 Promise라서 await 해야 한다.
+type SP = Record<string, string | string[] | undefined>;
+
+export default async function Home({ searchParams }: { searchParams: Promise<SP> }) {
+  const sp = await searchParams;
+  const str = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : undefined);
+  const f: Filters = {
+    q: str("q"),
+    role: str("role"),
+    exp: str("exp") as Filters["exp"],
+    skill: str("skill"),
+    real: str("real") === "1" ? "1" : undefined,
+    page: Number(str("page") ?? 1) || 1,
+  };
+  const { rows, total, page, pages } = searchJobs(f);
+  const roles = getRoles();
+
+  // 페이지 링크에 현재 필터를 유지하기 위한 헬퍼
+  const pageHref = (p: number) => {
+    const u = new URLSearchParams();
+    for (const [k, v] of Object.entries({ ...f, page: p })) if (v) u.set(k, String(v));
+    return `/?${u.toString()}`;
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">AI 직무 채용공고 검색</h1>
+
+      {/* 검색 폼. GET 방식이라 URL에 조건이 남아 공유·북마크가 된다. */}
+      <form className="grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-6" method="get">
+        <input name="q" defaultValue={f.q} placeholder="제목·회사·업무 검색" className="rounded border px-3 py-2 sm:col-span-2" />
+        <select name="role" defaultValue={f.role ?? ""} className="rounded border px-3 py-2">
+          <option value="">직무 전체</option>
+          {roles.map((r) => (
+            <option key={r.role} value={r.role}>{r.role} ({r.n})</option>
+          ))}
+        </select>
+        <select name="exp" defaultValue={f.exp ?? ""} className="rounded border px-3 py-2">
+          <option value="">경력 전체</option>
+          <option value="entry">신입 가능</option>
+          <option value="junior">1~2년</option>
+          <option value="mid">3~5년</option>
+          <option value="senior">6년 이상</option>
+        </select>
+        <input name="skill" defaultValue={f.skill} placeholder="역량 (예: React)" className="rounded border px-3 py-2" />
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-1 text-sm">
+            <input type="checkbox" name="real" value="1" defaultChecked={!!f.real} /> 실채용만
+          </label>
+          <button className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white">검색</button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </form>
+
+      <p className="text-sm text-zinc-600">{total.toLocaleString()}건 · {page}/{pages} 페이지</p>
+
+      <ul className="grid gap-3">
+        {rows.map((j) => <JobCard key={j.id} job={j} />)}
+      </ul>
+
+      <nav className="flex items-center justify-center gap-4 text-sm">
+        {page > 1 && <Link href={pageHref(page - 1)} className="rounded border bg-white px-3 py-1">이전</Link>}
+        {page < pages && <Link href={pageHref(page + 1)} className="rounded border bg-white px-3 py-1">다음</Link>}
+      </nav>
     </div>
   );
 }
