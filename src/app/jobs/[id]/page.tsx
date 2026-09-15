@@ -96,14 +96,15 @@ function Row({ k, v }: { k: string; v: string | null | undefined }) {
     <p className="text-sm"><span className="inline-block w-24 text-zinc-500">{k}</span>{v}</p>
   );
 }
-function SkillList({ title, items }: { title: string; items: { skill: string }[] }) {
+function SkillList({ title, items }: { title: string; items: { skill: string; canonical: string | null }[] }) {
   return (
     <Card title={title}>
       {items.length === 0 ? <p className="text-sm text-zinc-500">기재 없음</p> : (
         <ul className="flex flex-wrap gap-1">
           {items.map((s) => (
-            <li key={s.skill}>
-              <Link href={`/?skill=${encodeURIComponent(s.skill)}`} className="rounded bg-zinc-100 px-2 py-0.5 text-sm hover:bg-zinc-200">{s.skill}</Link>
+            <li key={s.skill} title={s.canonical ? `표준명: ${s.canonical.replace(/\|/g, ", ")}` : undefined}>
+              {/* 링크는 첫 번째 표준명으로. 원문 표기는 그대로 보여준다. */}
+              <Link href={`/?skill=${encodeURIComponent((s.canonical ?? s.skill).split("|")[0])}`} className="rounded bg-zinc-100 px-2 py-0.5 text-sm hover:bg-zinc-200">{s.skill}</Link>
             </li>
           ))}
         </ul>

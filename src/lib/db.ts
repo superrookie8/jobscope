@@ -56,8 +56,9 @@ export function searchJobs(f: Filters) {
   if (f.exp === "senior") where.push("a.exp_min >= 6");
   if (f.real) where.push("a.is_real_hiring = 1");
   if (f.skill) {
-    where.push("j.id IN (SELECT job_id FROM job_skill WHERE skill LIKE ?)");
-    params.push(`%${f.skill}%`);
+    // 표준명 정확 일치. 'React'가 'React Native'·'React Query'에 섞이지 않도록 skill_alias를 거친다.
+    where.push("j.id IN (SELECT s.job_id FROM job_skill s JOIN skill_alias al ON al.raw = s.skill WHERE al.canonical = ?)");
+    params.push(f.skill);
   }
 
   const whereSql = where.length ? "WHERE " + where.join(" AND ") : "";
@@ -89,7 +90,12 @@ export function getJob(id: string) {
               WHERE j.id = ?`)
     .get(id) as JobRow | undefined;
   if (!job) return null;
-  const skills = db.prepare(`SELECT skill, kind FROM job_skill WHERE job_id = ? ORDER BY kind DESC, skill`).all(id) as { skill: string; kind: string }[];
+  // 원문 표기와 함께 표준명(canonical)을 가져와 링크는 표준명으로 건다
+  const skills = db
+    .prepare(`SELECT s.skill, s.kind, GROUP_CONCAT(al.canonical, '|') AS canonical
+              FROM job_skill s LEFT JOIN skill_alias al ON al.raw = s.skill
+              WHERE s.job_id = ? GROUP BY s.skill, s.kind ORDER BY s.kind DESC, s.skill`)
+    .all(id) as { skill: string; kind: string; canonical: string | null }[];
   const categories = (db.prepare(`SELECT category FROM job_category WHERE job_id = ?`).all(id) as { category: string }[]).map((r) => r.category);
   return { ...job, skills, categories };
 }
@@ -120,6 +126,14 @@ export function getRoleStats() {
               FROM job_analysis WHERE role IS NOT NULL AND role != ''
               GROUP BY role ORDER BY n DESC`)
     .all() as { role: string; n: number; entry: number; real: number; ai_core: number }[];
+}
+
+// 검색 자동완성용 표준 역량 목록 (많이 언급된 순)
+export function getCanonicalSkills(limit = 60) {
+  return db
+    .prepare(`SELECT al.canonical, COUNT(DISTINCT s.job_id) AS n FROM job_skill s JOIN skill_alias al ON al.raw = s.skill
+              GROUP BY al.canonical ORDER BY n DESC LIMIT ?`)
+    .all(limit) as { canonical: string; n: number }[];
 }
 
 export function getAllJobIds() {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { searchJobs, getRoles, type Filters } from "@/lib/db";
+import { searchJobs, getRoles, getCanonicalSkills, type Filters } from "@/lib/db";
 import { JobCard } from "@/components/JobCard";
 
 export const metadata: Metadata = {
@@ -25,6 +25,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<SP>
   };
   const { rows, total, page, pages } = searchJobs(f);
   const roles = getRoles();
+  const skills = getCanonicalSkills();
 
   // 페이지 링크에 현재 필터를 유지하기 위한 헬퍼
   const pageHref = (p: number) => {
@@ -53,7 +54,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<SP>
           <option value="mid">3~5년</option>
           <option value="senior">6년 이상</option>
         </select>
-        <input name="skill" defaultValue={f.skill} placeholder="역량 (예: React)" className="rounded border px-3 py-2" />
+        <input name="skill" list="skills" defaultValue={f.skill} placeholder="역량 (예: React)" className="rounded border px-3 py-2" />
+        <datalist id="skills">{skills.map((s) => <option key={s.canonical} value={s.canonical}>{`${s.n}건`}</option>)}</datalist>
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-1 text-sm">
             <input type="checkbox" name="real" value="1" defaultChecked={!!f.real} /> 실채용만
