@@ -40,21 +40,25 @@ export default async function Home({ searchParams }: { searchParams: Promise<SP>
 
       {/* 검색 폼. GET 방식이라 URL에 조건이 남아 공유·북마크가 된다. */}
       <form className="grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-6" method="get">
-        <input name="q" defaultValue={f.q} placeholder="제목·회사·업무 검색" className="rounded border px-3 py-2 sm:col-span-2" />
-        <select name="role" defaultValue={f.role ?? ""} className="rounded border px-3 py-2">
+        <label className="sr-only" htmlFor="q">검색어</label>
+        <input id="q" name="q" defaultValue={f.q} placeholder="제목·회사·업무 검색" className="rounded border px-3 py-2 sm:col-span-2" />
+        <label className="sr-only" htmlFor="role">직무</label>
+        <select id="role" name="role" defaultValue={f.role ?? ""} className="rounded border px-3 py-2">
           <option value="">직무 전체</option>
           {roles.map((r) => (
             <option key={r.role} value={r.role}>{r.role} ({r.n})</option>
           ))}
         </select>
-        <select name="exp" defaultValue={f.exp ?? ""} className="rounded border px-3 py-2">
+        <label className="sr-only" htmlFor="exp">경력</label>
+        <select id="exp" name="exp" defaultValue={f.exp ?? ""} className="rounded border px-3 py-2">
           <option value="">경력 전체</option>
           <option value="entry">신입 가능</option>
           <option value="junior">1~2년</option>
           <option value="mid">3~5년</option>
           <option value="senior">6년 이상</option>
         </select>
-        <input name="skill" list="skills" defaultValue={f.skill} placeholder="역량 (예: React)" className="rounded border px-3 py-2" />
+        <label className="sr-only" htmlFor="skill">역량</label>
+        <input id="skill" name="skill" list="skills" defaultValue={f.skill} placeholder="역량 (예: React)" className="rounded border px-3 py-2" />
         <datalist id="skills">{skills.map((s) => <option key={s.canonical} value={s.canonical}>{`${s.n}건`}</option>)}</datalist>
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-1 text-sm">
@@ -64,7 +68,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<SP>
         </div>
       </form>
 
-      <p className="text-sm text-zinc-600">{total.toLocaleString()}건 · {page}/{pages} 페이지</p>
+      <p className="text-sm text-zinc-700">{total.toLocaleString()}건 · {page}/{pages} 페이지</p>
 
       <ul className="grid gap-3">
         {rows.map((j) => <JobCard key={j.id} job={j} />)}

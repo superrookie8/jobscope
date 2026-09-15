@@ -49,10 +49,10 @@ export default async function JobPage({ params }: Props) {
   return (
     <article className="space-y-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Link href="/" className="text-sm text-zinc-500 hover:underline">← 목록으로</Link>
+      <Link href="/" className="text-sm text-zinc-700 hover:underline">← 목록으로</Link>
       <header>
         <h1 className="text-2xl font-bold">{job.title}</h1>
-        <p className="mt-1 text-zinc-600">{job.company} · {job.location || "지역 미상"} · {job.exp_text || "경력 미상"} {job.deadline && `· ${job.deadline}`}</p>
+        <p className="mt-1 text-zinc-700">{job.company} · {job.location || "지역 미상"} · {job.exp_text || "경력 미상"} {job.deadline && `· ${job.deadline}`}</p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2">
@@ -93,13 +93,13 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function Row({ k, v }: { k: string; v: string | null | undefined }) {
   if (!v) return null;
   return (
-    <p className="text-sm"><span className="inline-block w-24 text-zinc-500">{k}</span>{v}</p>
+    <p className="text-sm"><span className="inline-block w-24 text-zinc-700">{k}</span>{v}</p>
   );
 }
 function SkillList({ title, items }: { title: string; items: { skill: string; canonical: string | null }[] }) {
   return (
     <Card title={title}>
-      {items.length === 0 ? <p className="text-sm text-zinc-500">기재 없음</p> : (
+      {items.length === 0 ? <p className="text-sm text-zinc-700">기재 없음</p> : (
         <ul className="flex flex-wrap gap-1">
           {items.map((s) => (
             <li key={s.skill} title={s.canonical ? `표준명: ${s.canonical.replace(/\|/g, ", ")}` : undefined}>

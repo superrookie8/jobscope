@@ -20,12 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="border-b bg-white">
           <nav className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3 text-sm">
             <Link href="/" className="text-base font-bold tracking-tight">JobScope</Link>
-            <Link href="/" className="text-zinc-600 hover:text-zinc-900">공고 검색</Link>
-            <Link href="/stats" className="text-zinc-600 hover:text-zinc-900">직무별 요구 역량</Link>
+            <Link href="/" className="text-zinc-700 hover:text-zinc-900">공고 검색</Link>
+            <Link href="/stats" className="text-zinc-700 hover:text-zinc-900">직무별 요구 역량</Link>
           </nav>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-6">{children}</main>
-        <footer className="mx-auto max-w-5xl px-4 py-8 text-xs text-zinc-500">
+        <footer className="mx-auto max-w-5xl px-4 py-8 text-xs text-zinc-700">
           데이터: 사람인·잡코리아 공개 공고 (2026-09 수집). 직무 분류·역량 추출은 LLM 기반 추정치입니다.
         </footer>
       </body>

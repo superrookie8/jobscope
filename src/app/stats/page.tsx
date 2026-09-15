@@ -35,7 +35,7 @@ export default function StatsPage() {
 
       {stats.filter((s) => s.n >= 20).map((s) => (
         <section key={s.role} className="rounded-lg border bg-white p-4">
-          <h2 className="mb-3 text-lg font-semibold">{s.role} <span className="text-sm font-normal text-zinc-500">({s.n}건)</span></h2>
+          <h2 className="mb-3 text-lg font-semibold">{s.role} <span className="text-sm font-normal text-zinc-700">({s.n}건)</span></h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Bars title="필수" items={skillsByRole[s.role]?.required ?? []} />
             <Bars title="우대" items={skillsByRole[s.role]?.preferred ?? []} />
@@ -49,11 +49,11 @@ export default function StatsPage() {
 function Bars({ title, items }: { title: string; items: { skill: string; n: number; pct: number }[] }) {
   return (
     <div>
-      <h3 className="mb-2 text-sm font-medium text-zinc-600">{title}</h3>
+      <h3 className="mb-2 text-sm font-medium text-zinc-700">{title}</h3>
       <ul className="space-y-1">
         {items.map((it) => (
           <li key={it.skill} className="text-sm">
-            <div className="flex justify-between"><span>{it.skill}</span><span className="text-zinc-500">{it.pct}%</span></div>
+            <div className="flex justify-between"><span>{it.skill}</span><span className="text-zinc-700">{it.pct}%</span></div>
             <div className="h-1.5 rounded bg-zinc-100"><div className="h-1.5 rounded bg-blue-500" style={{ width: `${Math.min(100, it.pct)}%` }} /></div>
           </li>
         ))}
